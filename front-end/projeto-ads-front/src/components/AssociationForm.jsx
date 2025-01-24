@@ -1,4 +1,5 @@
-import axios from "axios";
+import React, { useState } from 'react'; // Adicione esta linha no topo do arquivo
+import axios from 'axios';
 import './styles.css';
 
 const AssociationForm = () => {
