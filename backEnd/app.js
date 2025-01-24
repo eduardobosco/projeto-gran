@@ -53,8 +53,25 @@ app.get("/products", (req, res) => {
 });
 
 // Rota para associar fornecedor a produto
+// Rota para associar fornecedor a produto
 app.post("/associations", (req, res) => {
-    const { supplierId, productId } = req.body;
+    let { supplierId, productId } = req.body;
+
+    // Converte supplierId e productId para números
+    supplierId = parseInt(supplierId, 10);
+    productId = parseInt(productId, 10);
+
+    // Verifica se o fornecedor e o produto existem
+    const supplierExists = suppliers.some(supplier => supplier.id === supplierId);
+    const productExists = products.some(product => product.id === productId);
+
+    if (!supplierExists) {
+        return res.status(400).json({ message: "Fornecedor não encontrado!" });
+    }
+
+    if (!productExists) {
+        return res.status(400).json({ message: "Produto não encontrado!" });
+    }
 
     // Verifica se o fornecedor já está associado ao produto
     if (associations.some(assoc => assoc.supplierId === supplierId && assoc.productId === productId)) {
@@ -66,12 +83,36 @@ app.post("/associations", (req, res) => {
     res.status(201).json({ message: "Fornecedor associado com sucesso ao produto!", association: newAssociation });
 });
 
+
 // Rota para listar associações
 app.get("/associations", (req, res) => {
-    const result = associations.map(assoc => ({
-        product: products.find(product => product.id === assoc.productId),
-        supplier: suppliers.find(supplier => supplier.id === assoc.supplierId),
-    }));
+    const result = associations
+        .map(assoc => {
+            const product = products.find(product => product.id === assoc.productId);
+            const supplier = suppliers.find(supplier => supplier.id === assoc.supplierId);
+
+            if (!product || !supplier) {
+                return null; // Ignora associações inválidas
+            }
+
+            return {
+                id: assoc.id,
+                product: {
+                    id: product.id,
+                    name: product.name,
+                    barcode: product.barcode,
+                    description: product.description,
+                },
+                supplier: {
+                    id: supplier.id,
+                    name: supplier.name,
+                    cnpj: supplier.cnpj,
+                    contact: supplier.contact,
+                },
+            };
+        })
+        .filter(assoc => assoc !== null); // Remove associações inválidas
+
     res.json(result);
 });
 
