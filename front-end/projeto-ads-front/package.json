@@ -1,19 +1,21 @@
 {
   "name": "projeto-ads-front",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.14.5",
     "axios": "^1.7.9",
     "body-parser": "^1.20.3",
     "cra-template": "1.2.0",
     "express": "^4.21.2",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-scripts": "^3.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "^4.0.3",
     "sass": "^1.83.4",
     "sqlite3": "^5.1.7",
     "web-vitals": "^4.2.4"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.14.5"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -44,12 +46,12 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/eduardobosco/projetoGran.git"
+    "url": "git+https://github.com/eduardobosco/projeto-gran.git"
   },
   "author": "Eduardo Bosco",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/eduardobosco/projetoGran/issues"
+    "url": "https://github.com/eduardobosco/projeto-gran/issues"
   },
-  "homepage": "https://github.com/eduardobosco/projetoGran#readme"
+  "homepage": "https://github.com/eduardobosco/projeto-gran#readme"
 }
