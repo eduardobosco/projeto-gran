@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import './styles.css';
 
 const AssociationForm = () => {
     const [products, setProducts] = useState([]);
@@ -8,20 +9,25 @@ const AssociationForm = () => {
     const [selectedSupplier, setSelectedSupplier] = useState("");
     const [message, setMessage] = useState("");
 
-    useEffect(() => {
-        // Carrega os produtos e fornecedores
-        const fetchData = async () => {
-            try {
-                const productsResponse = await axios.get("http://localhost:3000/products");
-                const suppliersResponse = await axios.get("http://localhost:3000/suppliers");
-                setProducts(productsResponse.data);
-                setSuppliers(suppliersResponse.data);
-            } catch (error) {
-                setMessage("Erro ao carregar produtos ou fornecedores.");
-            }
-        };
-        fetchData();
-    }, []);
+    // Função para buscar os produtos
+    const fetchProducts = async () => {
+        try {
+            const response = await axios.get("http://localhost:3000/products");
+            setProducts(response.data);
+        } catch (error) {
+            setMessage({ text: "Erro ao carregar produtos.", type: "error" });
+        }
+    };
+
+    // Função para buscar os fornecedores
+    const fetchSuppliers = async () => {
+        try {
+            const response = await axios.get("http://localhost:3000/suppliers");
+            setSuppliers(response.data);
+        } catch (error) {
+            setMessage({ text: "Erro ao carregar fornecedores.", type: "error" });
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -30,43 +36,60 @@ const AssociationForm = () => {
                 productId: selectedProduct,
                 supplierId: selectedSupplier,
             });
-            setMessage(response.data.message);
+            setMessage({ text: response.data.message, type: "success" });
+
+            // Limpar os campos selecionados após o envio
+            setSelectedProduct("");
+            setSelectedSupplier("");
         } catch (error) {
-            setMessage(error.response.data.message || "Erro ao associar fornecedor ao produto!");
+            setMessage({
+                text: error.response?.data?.message || "Erro ao associar fornecedor ao produto!",
+                type: "error",
+            });
         }
     };
 
     return (
-        <div>
+        <div className="container">
             <h1>Associação de Fornecedor a Produto</h1>
             <form onSubmit={handleSubmit}>
                 <select
                     value={selectedProduct}
+                    onClick={fetchProducts} // Recarregar produtos ao clicar
                     onChange={(e) => setSelectedProduct(e.target.value)}
                     required
                 >
                     <option value="">Selecione um produto</option>
-                    {products.map((product) => (
-                        <option key={product.id} value={product.id}>
-                            {product.name}
-                        </option>
-                    ))}
+                    {products.length > 0 ? (
+                        products.map((product) => (
+                            <option key={product.id} value={product.id}>
+                                {product.name}
+                            </option>
+                        ))
+                    ) : (
+                        <option>Sem produtos cadastrados</option>
+                    )}
                 </select>
                 <select
                     value={selectedSupplier}
+                    onClick={fetchSuppliers} // Recarregar fornecedores ao clicar
                     onChange={(e) => setSelectedSupplier(e.target.value)}
                     required
                 >
                     <option value="">Selecione um fornecedor</option>
-                    {suppliers.map((supplier) => (
-                        <option key={supplier.id} value={supplier.id}>
-                            {supplier.name}
-                        </option>
-                    ))}
+                    {suppliers.length > 0 ? (
+                        suppliers.map((supplier) => (
+                            <option key={supplier.id} value={supplier.id}>
+                                {supplier.name}
+                            </option>
+                        ))
+                    ) : (
+                        <option>Sem fornecedores cadastrados</option>
+                    )}
                 </select>
                 <button type="submit">Associar Fornecedor</button>
             </form>
-            {message && <p>{message}</p>}
+            {message.text && <p className={`message ${message.type}`}>{message.text}</p>}
         </div>
     );
 };

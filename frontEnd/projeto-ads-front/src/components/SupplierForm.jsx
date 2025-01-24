@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import "./styles.css";
 
 const SupplierForm = () => {
     const [formData, setFormData] = useState({
@@ -25,7 +26,7 @@ const SupplierForm = () => {
     };
 
     return (
-        <div>
+        <div className="container">
             <h1>Cadastro de Fornecedor</h1>
             <form onSubmit={handleSubmit}>
                 <input
@@ -72,7 +73,7 @@ const SupplierForm = () => {
                 />
                 <button type="submit">Cadastrar</button>
             </form>
-            {message && <p>{message}</p>}
+            {message && <p className={`message ${message.type}`}>{message}</p>}
         </div>
     );
 };
